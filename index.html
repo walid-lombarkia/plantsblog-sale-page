@@ -1,50 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLANTSBLOG.COM - Premium Domain For Sale</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
-        .container { max-width: 700px; margin: 50px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-        h1 { color: #28a745; text-align: center; margin-bottom: 5px; }
-        .tagline { text-align: center; color: #6c757d; font-size: 1.2em; margin-bottom: 30px; }
-        h2 { color: #333; border-bottom: 2px solid #28a745; padding-bottom: 5px; margin-bottom: 20px; }
-        form { display: grid; gap: 15px; }
-        label { font-weight: bold; }
-        input[type="text"], input[type="email"], input[type="number"], textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        textarea { resize: vertical; height: 100px; }
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: background-color 0.3s;
-        }
-        button:hover { background-color: #1e7e34; }
-        /* Style for the Success Message (initially hidden) */
-        #form-success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-            margin-top: 20px;
-            text-align: center;
-            /* Key change: Hide it by default */
-            display: none; 
-        }
-    </style>
-</head>
 <body>
 
     <div class="container">
@@ -72,6 +25,7 @@
             <label for="message">Your Message / Questions:</label>
             <textarea id="message" name="Message" required></textarea>
 
+            <input type="hidden" name="form-name" value="contact"> 
             <input type="hidden" name="Domain_Being_Sold" value="plantsblog.com">
 
             <button type="submit">Submit Inquiry</button>
@@ -79,6 +33,14 @@
         </form>
 
     </div>
+
+    <form name="contact" netlify hidden>
+        <input type="text" name="Name" />
+        <input type="email" name="Email" />
+        <input type="number" name="Offer_USD" />
+        <textarea name="Message"></textarea>
+        <input type="hidden" name="Domain_Being_Sold" />
+    </form>
 
     <script>
         // Function to properly encode the form data for Netlify
@@ -92,8 +54,9 @@
         const successMessage = document.getElementById('form-success-message');
 
         form.addEventListener('submit', e => {
-            e.preventDefault(); // Prevents the default browser submission/redirect
+            e.preventDefault(); 
             
+            // Note: FormData already contains the hidden input with name="form-name"
             const formData = new FormData(form);
             
             fetch("/", {
@@ -102,15 +65,14 @@
                 body: encode(Object.fromEntries(formData))
             })
             .then(response => {
-                if (response.status === 200) {
-                    // Submission successful (Netlify detected the form)
-                    successMessage.style.display = 'block'; // Show the success message
-                    form.reset(); // Clear the form fields
-                    // Optional: Scroll to the top of the container to show the message
+                // Netlify returns a 200 (OK) on successful AJAX submission
+                if (response.ok) { 
+                    successMessage.style.display = 'block'; 
+                    form.reset(); 
                     document.querySelector('.container').scrollIntoView({ behavior: 'smooth' }); 
                 } else {
-                    // Handle failure (e.g., if Netlify had an issue)
-                    alert("There was an issue submitting your inquiry. Please try again.");
+                    // This error indicates the AJAX POST failed (like the 404 you saw)
+                    alert("There was an issue submitting your inquiry. Netlify did not accept the data. Please check the Netlify Forms tab for details.");
                 }
             })
             .catch(error => alert(`Error: ${error.message}`))
