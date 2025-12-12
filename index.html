@@ -4,22 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLANTSBLOG.COM - Premium Domain For Sale</title>
+
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
-        .container { max-width: 700px; margin: 50px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-        h1 { color: #28a745; text-align: center; margin-bottom: 5px; }
-        .tagline { text-align: center; color: #6c757d; font-size: 1.2em; margin-bottom: 30px; }
-        h2 { color: #333; border-bottom: 2px solid #28a745; padding-bottom: 5px; margin-bottom: 20px; }
-        form { display: grid; gap: 15px; }
-        label { font-weight: bold; }
-        input[type="text"], input[type="email"], input[type="number"], textarea {
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #6c757d;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
         }
-        textarea { resize: vertical; height: 100px; }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
         button {
             background-color: #28a745;
             color: white;
@@ -30,21 +78,86 @@
             font-size: 1.1em;
             transition: background-color 0.3s;
         }
-        button:hover { background-color: #1e7e34; }
+
+        button:hover {
+            background-color: #1e7e34;
+        }
+
+        /* ✅ Popup Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(3px);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .modal-content {
+            background: #e9f7ef;
+            border-left: 6px solid #28a745;
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            animation: popIn 0.35s ease;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: #1e7e34;
+            font-size: 1.6em;
+        }
+
+        .modal-content p {
+            color: #2f4f2f;
+            margin-bottom: 20px;
+        }
+
+        #closeModal {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        #closeModal:hover {
+            background: #1e7e34;
+        }
+
+        /* ✅ Animations */
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
+
 <body>
 
     <div class="container">
-        
         <h1>🌱 PLANTSBLOG.COM is for Sale 🌱</h1>
         <p class="tagline">Secure this premium domain name for the booming gardening, wellness, and lifestyle niche.</p>
 
         <h2>Contact the Seller</h2>
-        
-        <!-- Netlify form -->
+
         <form name="contact" method="POST" data-netlify="true" id="contact-form">
-            <!-- Netlify needs this hidden input to recognize the form -->
             <input type="hidden" name="form-name" value="contact">
 
             <label for="name">Your Name:</label>
@@ -63,14 +176,24 @@
 
             <button type="submit">Submit Inquiry</button>
         </form>
+    </div>
 
+    <!-- ✅ Success Popup -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <h2>🌿 Submission Successful 🌿</h2>
+            <p>Thanks for your inquiry! We’ll get back to you shortly.</p>
+            <button id="closeModal">Close</button>
+        </div>
     </div>
 
     <script>
         const form = document.getElementById('contact-form');
+        const modal = document.getElementById('successModal');
+        const closeBtn = document.getElementById('closeModal');
 
         form.addEventListener('submit', function (event) {
-            event.preventDefault(); // stop default browser submit
+            event.preventDefault();
 
             const formData = new FormData(form);
 
@@ -79,12 +202,16 @@
                 body: formData
             })
             .then(() => {
-                alert('Submission success!');
+                modal.style.display = 'flex';
                 form.reset();
             })
             .catch(() => {
                 alert('There was an error. Please try again.');
             });
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
         });
     </script>
 
