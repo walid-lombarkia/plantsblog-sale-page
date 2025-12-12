@@ -17,7 +17,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box; /* Important for padding/width */
+            box-sizing: border-box;
         }
         textarea { resize: vertical; height: 100px; }
         button {
@@ -31,7 +31,8 @@
             transition: background-color 0.3s;
         }
         button:hover { background-color: #1e7e34; }
-        .success-message {
+        /* Style for the Success Message (initially hidden) */
+        #form-success-message {
             background-color: #d4edda;
             color: #155724;
             padding: 15px;
@@ -39,6 +40,8 @@
             border-radius: 5px;
             margin-top: 20px;
             text-align: center;
+            /* Key change: Hide it by default */
+            display: none; 
         }
     </style>
 </head>
@@ -49,9 +52,13 @@
         <h1>🌱 PLANTSBLOG.COM is for Sale 🌱</h1>
         <p class="tagline">Secure this premium domain name for the booming gardening, wellness, and lifestyle niche.</p>
 
+        <div id="form-success-message">
+            <p><strong>✅ Success!</strong> Your inquiry has been sent to the seller. Thank you!</p>
+        </div>
+
         <h2>Contact the Seller</h2>
         
-        <form name="contact" method="POST" netlify action="/success">
+        <form name="contact" id="contact-form" method="POST" netlify>
             
             <label for="name">Your Name:</label>
             <input type="text" id="name" name="Name" required>
@@ -72,6 +79,43 @@
         </form>
 
     </div>
+
+    <script>
+        // Function to properly encode the form data for Netlify
+        const encode = (data) => {
+            return Object.keys(data)
+                .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+                .join("&");
+        }
+
+        const form = document.getElementById('contact-form');
+        const successMessage = document.getElementById('form-success-message');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault(); // Prevents the default browser submission/redirect
+            
+            const formData = new FormData(form);
+            
+            fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: encode(Object.fromEntries(formData))
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    // Submission successful (Netlify detected the form)
+                    successMessage.style.display = 'block'; // Show the success message
+                    form.reset(); // Clear the form fields
+                    // Optional: Scroll to the top of the container to show the message
+                    document.querySelector('.container').scrollIntoView({ behavior: 'smooth' }); 
+                } else {
+                    // Handle failure (e.g., if Netlify had an issue)
+                    alert("There was an issue submitting your inquiry. Please try again.");
+                }
+            })
+            .catch(error => alert(`Error: ${error.message}`))
+        });
+    </script>
 
 </body>
 </html>
